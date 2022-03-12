@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Component, Inject } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +8,19 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'thelastpress';
+  title = 'The Last Press';
+
+  scrollY = new BehaviorSubject<number>(0);
+  scrollY$ = this.scrollY.asObservable();
+
+  constructor(@Inject(DOCUMENT) private _document: Document) {
+    this._document.addEventListener('scroll', ($event) => {
+      this.scrollY.next(this.onContentScrolled());
+    });
+  }
+
+  onContentScrolled(): number {
+    const offset = window.pageYOffset;
+    return offset;
+  }
 }
